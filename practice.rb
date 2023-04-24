@@ -27,3 +27,58 @@ blockchain = [
 # Anthony's KelloggCoin balance is 2650
 
 # 👇👇👇 Your code HERE 👇👇👇
+
+# 1. Obtain length of object.
+
+N = blockchain.size-1
+
+# 2. Loop over object and construct a unique array of users.
+
+users = []
+
+for i in (0..N)
+  froms = blockchain[i]["from_user"]
+  users.push(froms)
+  tos = blockchain[i]["to_user"]
+  users.push(tos)
+end
+
+users = users.uniq
+users = users.compact!
+users = users.sort!
+
+# 3. Loop over each node, and grab to and from transactions into a running balance by user and store into an array.
+
+balances = []
+
+for user in users
+  balance = 0
+  for i in (0..N)
+    if blockchain[i]["to_user"] == user
+      balance = balance + blockchain[i]["amount"]
+    elsif blockchain[i]["from_user"] == user
+      balance = balance - blockchain[i]["amount"]
+    end
+  end
+  part = {"user" => user, "balance" => balance}
+  balances.push(part)
+end
+
+# 4. Since the output is sorted by order, we rank the array according to the balance "key."
+
+balances = balances.sort_by! {|k| -k["balance"]}
+
+# 5. Loop over the user list and display each user's balance.
+
+J = balances.size-1
+for i in (0..J)
+    name = balances[i]["user"]
+    propername = name.capitalize()
+    puts "#{propername}'s KelloggCoin balance is #{balances[i]["balance"]}"
+end
+
+# Note: This code should be insensitive to new transactions added to the blockchain. 
+# That is, if new users are issued KelloggCoin, or new transfers between existing users occur
+# this code should still output a sorted list of users by their coin balances. 
+
+# I've tried editing the blockchain array and it works! Yay!
